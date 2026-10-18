@@ -23,9 +23,9 @@ int solve_phase_1(uint64_t challenge, char *out, size_t cap) {
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
-    size_t p1_step2_result = (challenge ^ 0x7d05) + (challenge >> 32) * 8;
-    size_t p1_step0_result = 0x333b ^ ((challenge >> 16) * 2 + challenge);
-    size_t p1_step1_result = 0x9392 ^ (p1_step0_result * 3 + p1_step2_result);
+    uint32_t p1_step2_result = (challenge ^ 0x7d05) + (challenge >> 32) * 8;
+    uint32_t p1_step0_result = 0x333b ^ ((challenge >> 16) * 2 + challenge);
+    uint32_t p1_step1_result = 0x9392 ^ (p1_step0_result * 3 + p1_step2_result);
     values[0] = p1_step1_result;
     count = 1;
     return write_answer(out, cap, values, count);
