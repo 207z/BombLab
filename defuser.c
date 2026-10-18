@@ -23,7 +23,11 @@ int solve_phase_1(uint64_t challenge, char *out, size_t cap) {
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
-    // TODO: 根据 phase_01 的汇编，用 challenge 算出口令中的各个整数，依次存入 values，并把 count 改为整数个数。
+    size_t p1_step2_result = (challenge ^ 0x7d05) + (challenge >> 32) * 8;
+    size_t p1_step0_result = 0x333b ^ ((challenge >> 16) * 2 + challenge);
+    size_t p1_step1_result = 0x9392 ^ (p1_step0_result * 3 + p1_step2_result);
+    values[0] = p1_step1_result;
+    count = 1;
     return write_answer(out, cap, values, count);
 }
 
