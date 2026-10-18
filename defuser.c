@@ -81,11 +81,49 @@ int solve_phase_3(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
+uint32_t ecx_4;
+uint32_t eax_4;
+uint32_t edi_4;
+uint32_t esi_4;
+uint32_t edx_4;
+void work_4(){
+    eax_4 = edi_4;
+    edi_4 = edx_4;
+    edi_4 -= esi_4;
+    edi_4 >>= 1;
+    edi_4 += esi_4;
+    if(eax_4 != edi_4){
+        uint32_t ebx_4 = ecx_4 + edi_4;
+        if(edi_4 <= eax_4){
+            esi_4 = edi_4 + 1;
+            edi_4 = eax_4;
+            work_4();
+            eax_4 = (5 * eax_4) ^ ebx_4 ^ 0x1f;
+        }
+        else{
+            edx_4 = edi_4 - 1;
+            edi_4 = eax_4;
+            work_4();
+            eax_4 = (5 * eax_4) ^ ebx_4 ^ 0x14;
+        }
+        return ;
+    }
+    eax_4 = edi_4 + 0xfc;
+    eax_4 ^= ecx_4;
+}
+
 int solve_phase_4(uint64_t challenge, char *out, size_t cap) {
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
-    // TODO: 根据 phase_04 的汇编，用 challenge 算出口令中的各个整数，依次存入 values，并把 count 改为整数个数。
+    ecx_4 = (challenge >> 7) ^ (challenge >> 32);
+    eax_4 = challenge >> 32;
+    edi_4 = challenge & 0x7f;
+    edx_4 = 0x7f;
+    esi_4 = 0;
+    work_4();
+    values[0] = eax_4;
+    count = 1;
     return write_answer(out, cap, values, count);
 }
 
