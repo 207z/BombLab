@@ -127,11 +127,47 @@ int solve_phase_4(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
+struct p5_nodes{
+    uint32_t value1;
+    uint32_t value2;
+}p5_heads[12];
+
 int solve_phase_5(uint64_t challenge, char *out, size_t cap) {
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
-    // TODO: 根据 phase_05 的汇编，用 challenge 算出口令中的各个整数，依次存入 values，并把 count 改为整数个数。
+    p5_heads[0].value1 = 2608;
+    p5_heads[0].value2 = 6738;
+    p5_heads[1].value1 = 1357;
+    p5_heads[1].value2 = 41841;
+    p5_heads[2].value1 = 2148;
+    p5_heads[2].value2 = 45786;
+    p5_heads[3].value1 = 1121;
+    p5_heads[3].value2 = 25315;
+    p5_heads[4].value1 = 1860;
+    p5_heads[4].value2 = 19446;
+    p5_heads[5].value1 = 2844;
+    p5_heads[5].value2 = 1221;
+    p5_heads[6].value1 = 2322;
+    p5_heads[6].value2 = 1124;
+    p5_heads[7].value1 = 1666;
+    p5_heads[7].value2 = 53720;
+    p5_heads[8].value1 = 554;
+    p5_heads[8].value2 = 51799;
+    p5_heads[9].value1 = 59;
+    p5_heads[9].value2 = 9401;
+    p5_heads[10].value1 = 369;
+    p5_heads[10].value2 = 58527;
+    int j = challenge & 0x7;
+    values[1] = p5_heads[j].value1;
+    values[0] = ((challenge >> 32) ^ (challenge >> 6) ^ p5_heads[j].value2 ^ 0xef5e) + values[1];
+    int top = (challenge >> 3) & 3;
+    for(int i = 1 ; i <= top ; i++){
+        j++;
+        values[1] = p5_heads[j].value1;
+        values[0] = (values[0] ^ p5_heads[j].value2) + values[1];
+    }
+    count = 2;
     return write_answer(out, cap, values, count);
 }
 
