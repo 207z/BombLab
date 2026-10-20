@@ -171,11 +171,95 @@ int solve_phase_5(uint64_t challenge, char *out, size_t cap) {
     return write_answer(out, cap, values, count);
 }
 
+void p6_op_3(uint32_t *tmp1,uint32_t *tmp2){
+    *tmp1 = ((*tmp2) >> 3) + ((*tmp2) << 29);
+}
+
+void p6_op_5(uint32_t *tmp1,uint32_t *tmp2){
+    *tmp1 = (*tmp2) + 0xabbd;
+    *tmp2 >>= 0x5;
+    *tmp1 ^= (*tmp2);
+}
+
+void p6_op_4(uint32_t *tmp1,uint32_t *tmp2){
+    *tmp1 = (*tmp2) ^ 0xab81;
+    *tmp1 = (*tmp1) + 2 * (*tmp2);
+}
+
+void p6_op_1(uint32_t *tmp1,uint32_t *tmp2){
+    *tmp1 = ((*tmp2) * 2 + 0xaaf5) ^ (7 * (*tmp2));
+}
+
+void p6_op_0(uint32_t *tmp1,uint32_t *tmp2){
+    *tmp1 = (((*tmp2) >> 3) ^ (*tmp2)) + 0x271c;
+}
+
+void p6_op_2(uint32_t *tmp1,uint32_t *tmp2){
+    *tmp1 = (((*tmp2) << 7) + ((*tmp2) >> 25)) ^ 0x2e4d;
+}
+
 int solve_phase_6(uint64_t challenge, char *out, size_t cap) {
     uint32_t values[MAX_FIELDS] = {0};
     size_t count = 0;
     (void)challenge;
-    // TODO: 根据 phase_06 的汇编，用 challenge 算出口令中的各个整数，依次存入 values，并把 count 改为整数个数。
+    uint32_t tmp2 = (challenge >> 32) ^ (challenge >> 6);
+    uint32_t tmp1 = challenge & 0x7;
+    switch(challenge & 0x7){
+        case 0:
+            p6_op_3(&tmp1, &tmp2);
+            break;
+        case 1:
+            p6_op_5(&tmp1, &tmp2);
+            break;
+        case 2:
+            p6_op_4(&tmp1, &tmp2);
+            break;
+        case 3:
+            p6_op_5(&tmp1, &tmp2);
+            break;
+        case 4:
+            p6_op_1(&tmp1, &tmp2);
+            break;
+        case 5:
+            p6_op_0(&tmp1, &tmp2);
+            break;
+        case 6:
+            p6_op_4(&tmp1, &tmp2);
+            break;
+        case 7:
+            p6_op_2(&tmp1, &tmp2);
+            break;
+    }
+    tmp1 = tmp1 ^ 0x91bb;
+    tmp2 = tmp1;
+    switch((challenge >> 3) & 0x7){
+        case 0:
+            p6_op_3(&tmp1, &tmp2);
+            break;
+        case 1:
+            p6_op_5(&tmp1, &tmp2);
+            break;
+        case 2:
+            p6_op_4(&tmp1, &tmp2);
+            break;
+        case 3:
+            p6_op_5(&tmp1, &tmp2);
+            break;
+        case 4:
+            p6_op_1(&tmp1, &tmp2);
+            break;
+        case 5:
+            p6_op_0(&tmp1, &tmp2);
+            break;
+        case 6:
+            p6_op_4(&tmp1, &tmp2);
+            break;
+        case 7:
+            p6_op_2(&tmp1, &tmp2);
+            break;
+    }
+    values[0] = tmp1 + 0x676b;
+    count = 1;
     return write_answer(out, cap, values, count);
 }
 
